@@ -37,7 +37,7 @@ The script first check if the API call requires account-level credential or not,
         generateProjectLevelToken();
     }
 
-This function is to get values from Postman environment that is set on step 4 above and set claims.
+Each function is to get values from Postman environment that is set on step 4 above and set claims and payload.
 
     function generateAccountLevelToken() {
         // Set JWT token claims
