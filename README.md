@@ -36,3 +36,21 @@ The script first check if the API call requires account-level credential or not,
         // Generate project-level token
         generateProjectLevelToken();
     }
+
+This function is to get values from Postman environment that is set on step 4 above and set claims.
+    function generateAccountLevelToken() {
+        // Set JWT token claims
+        var apiSecret = pm.environment.get('accountApiSecret');
+        var currentTimestamp = Math.floor(Date.now() / 1000);
+        var expiryTimestamp = currentTimestamp + 5;
+        var header = {
+            'typ': 'JWT',
+            'alg': 'HS256'
+        }
+        var payload = {
+            'iss': pm.environment.get('accountApiKey'),
+            'ist': 'account',
+            'iat': currentTimestamp,
+            'exp': expiryTimestamp,
+            'jti': pm.environment.get('jti')
+        }
