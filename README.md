@@ -22,17 +22,17 @@ jti = Set jti to a unique identifier for the JWT token. This is optional. See th
 5. Make sure you select the environment on the top-right dropdown. It's ready to run, expand the imported collection on the left pane and try running any REST API request.
 
 # How the pre-request script works
---works in progress--
+--works in progress--  
 Those REST API calls must be authenticated using a custom HTTP header `X-OPENTOK-AUTH` along with a JSON web token. Find more about the JWT token claims from [Authentication](https://tokbox.com/developer/rest/#authentication).
 
 Some of those REST API calls require account-level API key, which is only available to Video API account administrators.
-The script first check if the API call requires account-level credential or not, the flag - accountLevel - is set on each request headers already.
+The script first check if the API call requires account-level credential or not, the flag `accountLevel` is set on each request headers already.
 
-var accountLevel = pm.request.headers.get('accountLevel');
-if (accountLevel == "true") {
-    // Generate account-level token
-    generateAccountLevelToken();
-} else {
-    // Generate project-level token
-    generateProjectLevelToken();
-}
+    var accountLevel = pm.request.headers.get('accountLevel');
+    if (accountLevel == "true") {
+        // Generate account-level token
+        generateAccountLevelToken();
+    } else {
+        // Generate project-level token
+        generateProjectLevelToken();
+    }
