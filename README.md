@@ -38,6 +38,7 @@ The script first check if the API call requires account-level credential or not,
     }
 
 This function is to get values from Postman environment that is set on step 4 above and set claims.
+
     function generateAccountLevelToken() {
         // Set JWT token claims
         var apiSecret = pm.environment.get('accountApiSecret');
