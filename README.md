@@ -2,9 +2,9 @@
 Postman collection contains Vonage Video API (a.k.a. TokBox OpenTok) REST API as of 16-Feb-2022 with basic parameters and request body sample. Postman pre-request script is also included in the collection, which automatically generates JSON web token every time you send an API request. 
 
 # Applies To
-- Vonage Video API https://tokbox.com/developer/guides/basics/
-- Vonage Video REST API https://tokbox.com/developer/rest/
-- Vonage Insights API https://tokbox.com/developer/guides/insights/
+- [Vonage Video API](https://tokbox.com/developer/guides/basics/)
+- [Vonage Video REST API](https://tokbox.com/developer/rest/)
+- [Vonage Insights API](https://tokbox.com/developer/guides/insights/)
 
 # Prerequisites
 This requires a Vonage API account. If you don’t have one already, you can [sign up today](https://www.vonage.co.uk/communications-apis/video/?adobe_mc=MCMID%3D83313646441230218354214934259658269953%7CMCORGID%3DA8833BC75245AF9E0A490D4D%2540AdobeOrg%7CTS%3D1646137433) and start building with free credit. 
@@ -44,7 +44,7 @@ To use these methods, you must set iss to the account-level API key as below, wh
         "jti": "jwt_nonce"
     }
 
-You would normally generate JWT token manually using the above claims on https://jwt.io/.
+You would normally generate JWT token manually using the above claims on [JWT.IO](https://jwt.io/).
 The pre-request script automates the process, generating JWT token and it's ready to use in the `X-OPENTOK-AUTH` header every time you send a call on Postman.
 The script also detects if the account-level API key is required or not depending on REST method by checking a header `accountLevel` on each method.
 
