@@ -45,7 +45,7 @@ To use these methods, you must set iss to the account-level API key as below, wh
         "jti": "jwt_nonce"
     }
 
-You would normally generate JWT token manually using https://jwt.io/.
+You would normally generate JWT token manually using the above claims on https://jwt.io/.
 The pre-request script automates the process, generating JWT token and it's ready to use in the `X-OPENTOK-AUTH` header every time you send a call on Postman.
 The script also detects if the account-level API key is required or not depending on REST method by checking a header `accountLevel` on each method.
 
