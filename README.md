@@ -13,7 +13,7 @@ This requires a Vonage API account. If you don’t have one already, you can [si
 1. Download Postman desktop app or log in to Postman web app. (Ref. [Download Postman](https://www.postman.com/downloads/))
 2. Import the collection to Postman. (Ref. [Importing Postman data](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-postman-data))
 3. Import the environment template. (Ref. [Adding environment variables](https://learning.postman.com/docs/sending-requests/managing-environments/#adding-environment-variables))
-4. Add your own credential on [CURRENT VALUE] section 
+4. Add your own credential on [CURRENT VALUE] section  
 projectApiKey = Your Video API project API key  
 projectApiSecret = Your Video API project secret  
 accountApiKey = Your Video API account API key  
