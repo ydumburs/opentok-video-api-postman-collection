@@ -115,6 +115,7 @@ This is the last part to assign the generated token into Postman environment `jw
 
 # Reference
 My script was adapted from https://gist.github.com/corbanb/db03150abbe899285d6a86cc480f674d.
+Cryptojs https://cryptojs.gitbook.io/docs/
 
 # Disclaimer
 This is provided AS IS and not supported by Vonage team. Use it at your own risk.
