@@ -79,7 +79,7 @@ Here's a function to set claims for account-level methods:
 
 Next part is encoding JWT token with Base64url which is URL-safe.
 
-function base64url(source) {
+    function base64url(source) {
         // Encode in classical base64
         encodedSource = CryptoJS.enc.Base64.stringify(source);
 
