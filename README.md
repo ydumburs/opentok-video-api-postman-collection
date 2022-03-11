@@ -22,7 +22,6 @@ jti = Set jti to a unique identifier for the JWT token. This is optional. (Ref. 
 5. Make sure you select the environment on the top-right dropdown. It's ready to run, expand the imported collection on the left pane and try running any REST API request.
 
 # How the pre-request script works
---works in progress--  
 Video API REST methods must be authenticated using a custom HTTP header `X-OPENTOK-AUTH` along with a JWT token.
 The JWT token claims will be like this for most of methods:
 
