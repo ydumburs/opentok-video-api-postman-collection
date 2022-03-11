@@ -10,9 +10,9 @@ Postman collection contains Vonage Video API (a.k.a. TokBox OpenTok) REST API as
 This requires a Vonage API account. If you don’t have one already, you can [sign up today](https://www.vonage.co.uk/communications-apis/video/?adobe_mc=MCMID%3D83313646441230218354214934259658269953%7CMCORGID%3DA8833BC75245AF9E0A490D4D%2540AdobeOrg%7CTS%3D1646137433) and start building with free credit. 
 
 # Procedure
-1. Download Postman desktop app or log in to Postman web app. Ref. [Download Postman](https://www.postman.com/downloads/)
-2. Import the collection to Postman. Ref. [Importing Postman data](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-postman-data)
-3. Import the environment template. Ref. [Adding environment variables](https://learning.postman.com/docs/sending-requests/managing-environments/#adding-environment-variables)
+1. Download Postman desktop app or log in to Postman web app. (Ref. [Download Postman](https://www.postman.com/downloads/))
+2. Import the collection to Postman. (Ref. [Importing Postman data](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-postman-data))
+3. Import the environment template. (Ref. [Adding environment variables](https://learning.postman.com/docs/sending-requests/managing-environments/#adding-environment-variables))
 4. Add your own credential on [CURRENT VALUE] section
 projectApiKey = Your Video API project API key  
 projectApiSecret = Your Video API project secret  
@@ -23,10 +23,31 @@ jti = Set jti to a unique identifier for the JWT token. This is optional. See th
 
 # How the pre-request script works
 --works in progress--  
-Those REST API calls must be authenticated using a custom HTTP header `X-OPENTOK-AUTH` along with a JSON web token. Find more about the JWT token claims from [Authentication](https://tokbox.com/developer/rest/#authentication).
+Video API REST methods must be authenticated using a custom HTTP header `X-OPENTOK-AUTH` along with a JWT token.
+The JWT token claims will be like this for most of methods:
 
-Some of those REST API calls require account-level API key, which is only available to Video API account administrators.
-The script first check if the API call requires account-level credential or not, the flag `accountLevel` is set on each request headers already.
+    {
+        "iss": "YOUR_VONAGE_VIDEO_API_PROJECT_API_KEY",
+        "ist": "project",
+        "iat": current_timestamp_in_seconds,
+        "exp": expire_timestamp_in_seconds,
+        "jti": "jwt_nonce"
+    }
+    
+Some REST methods are restricted to registered administrators for the Vonage Video API account. 
+To use these methods, you must set iss to the account-level API key as below, which is only available to account administrators.
+
+    {
+        "iss": "YOUR_VONAGE_VIDEO_API_ACCOUNT_API_KEY",
+        "ist": "account",
+        "iat": current_timestamp_in_seconds,
+        "exp": expire_timestamp_in_seconds,
+        "jti": "jwt_nonce"
+    }
+
+You would normally generate JWT token manually using https://jwt.io/.
+The pre-request script automates the process, generating JWT token and it's ready to use in the `X-OPENTOK-AUTH` header every time you send a call on Postman.
+The script also detects if the account-level API key is required or not depending on REST method by checking a header `accountLevel` on each method.
 
     var accountLevel = pm.request.headers.get('accountLevel');
     if (accountLevel == "true") {
@@ -37,7 +58,7 @@ The script first check if the API call requires account-level credential or not,
         generateProjectLevelToken();
     }
 
-Each function is to get values from Postman environment that is set on step 4 above and set claims and payload.
+Here's a function to set claims for account-level methods:
 
     function generateAccountLevelToken() {
         // Set JWT token claims
@@ -55,3 +76,40 @@ Each function is to get values from Postman environment that is set on step 4 ab
             'exp': expiryTimestamp,
             'jti': pm.environment.get('jti')
         }
+
+Next part is encoding JWT token with Base64url which is URL-safe.
+
+function base64url(source) {
+        // Encode in classical base64
+        encodedSource = CryptoJS.enc.Base64.stringify(source);
+
+        // Remove padding equal characters
+        encodedSource = encodedSource.replace(/=+$/, '');
+
+        // Replace characters according to base64url specifications
+        encodedSource = encodedSource.replace(/\+/g, '-');
+        encodedSource = encodedSource.replace(/\//g, '_');
+
+        return encodedSource;
+    }
+
+    // Encode header
+    var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));
+    var encodedHeader = base64url(stringifiedHeader);
+
+    // Encode payload
+    var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(payload));
+    var encodedData = base64url(stringifiedData);
+
+    // Build token
+    var token = `${encodedHeader}.${encodedData}`;
+    
+    // Sign token
+    var signature = CryptoJS.HmacSHA256(token, apiSecret);
+    signature = base64url(signature);
+    var signedToken = `${token}.${signature}`;
+
+This is the last part to set the generated token into Postman environment `jwt` which is referred by `X-OPENTOK-AUTH` header on each method.
+
+    pm.environment.set('jwt', signedToken);
+
