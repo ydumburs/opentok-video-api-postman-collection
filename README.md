@@ -27,7 +27,7 @@ Video API REST methods must be authenticated using a custom HTTP header `X-OPENT
 The JWT token claims will be like this for most of methods:
 
     {
-        "iss": "YOUR_VONAGE_VIDEO_API_PROJECT_API_KEY",
+        "iss": "YOUR_PROJECT_API_KEY",
         "ist": "project",
         "iat": current_timestamp_in_seconds,
         "exp": expire_timestamp_in_seconds,
@@ -38,7 +38,7 @@ Some REST methods are restricted to registered administrators for the Vonage Vid
 To use these methods, you must set iss to the account-level API key as below, which is only available to account administrators.
 
     {
-        "iss": "YOUR_VONAGE_VIDEO_API_ACCOUNT_API_KEY",
+        "iss": "YOUR_ACCOUNT_API_KEY",
         "ist": "account",
         "iat": current_timestamp_in_seconds,
         "exp": expire_timestamp_in_seconds,
@@ -109,7 +109,8 @@ Next part is encoding JWT token with Base64url which is URL-safe.
     signature = base64url(signature);
     var signedToken = `${token}.${signature}`;
 
-This is the last part to set the generated token into Postman environment `jwt` which is referred by `X-OPENTOK-AUTH` header on each method.
+This is the last part to assign the generated token into Postman environment `jwt` and this is linked `X-OPENTOK-AUTH` header on each method.
 
     pm.environment.set('jwt', signedToken);
+
 
