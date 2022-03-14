@@ -23,7 +23,7 @@ jti = Set jti to a unique identifier for the JWT token. This is optional. (Ref. 
 
 # How the pre-request script works
 Video API REST methods must be authenticated using a custom HTTP header `X-OPENTOK-AUTH` along with a JWT token.
-The JWT token claims will be like this for most of methods:
+The JWT token claims will be like this for most of the methods:
 
     {
         "iss": "YOUR_PROJECT_API_KEY",
@@ -44,9 +44,9 @@ To use these methods, you must set iss to the account-level API key as below, wh
         "jti": "jwt_nonce"
     }
 
-You would normally generate JWT token manually using the above claims on [JWT.IO](https://jwt.io/).
+You would normally generate a JWT token manually using the above claims on [JWT.IO](https://jwt.io/).
 The pre-request script automates the process, generating JWT token and it's ready to use in the `X-OPENTOK-AUTH` header every time you send a call on Postman.
-The script also detects if the account-level API key is required or not depending on REST method by checking a header `accountLevel` on each method.
+The script also detects if the account-level API key is required or not depending on the REST method by checking a header `accountLevel` on each method.
 
     var accountLevel = pm.request.headers.get('accountLevel');
     if (accountLevel == "true") {
@@ -76,7 +76,7 @@ Here's a function to set claims for account-level methods:
             'jti': pm.environment.get('jti')
         }
 
-Next part is encoding JWT token with Base64url which is URL-safe.
+The next part is encoding the JWT token with Base64url which is URL-safe.
 
     function base64url(source) {
         // Encode in classical base64
