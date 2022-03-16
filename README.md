@@ -14,11 +14,11 @@ This requires a Vonage API account. If you don’t have one already, you can [si
 2. Import the collection to Postman. (Ref. [Importing Postman data](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-postman-data))
 3. Import the environment template. (Ref. [Adding environment variables](https://learning.postman.com/docs/sending-requests/managing-environments/#adding-environment-variables))
 4. Add your own credential on [CURRENT VALUE] section:  
-projectApiKey = Your Video API project API key  
-projectApiSecret = Your Video API project secret  
-accountApiKey = Your Video API account API key  
-accountApiSecret = Your Video API account secret  
-jti = Set jti to a unique identifier for the JWT token. This is optional. (Ref. [JSON web token spec](https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.7))  
+`projectApiKey` = Your Video API project API key  
+`projectApiSecret` = Your Video API project secret  
+`accountApiKey` = Your Video API account API key  
+`accountApiSecret` = Your Video API account secret  
+`jti` = Set jti to a unique identifier for the JWT token. This is optional. (Ref. [JSON web token spec](https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.7))  
 5. Make sure you select the environment on the top-right dropdown. It's ready to run, expand the imported collection on the left pane and try running any REST API request.
 
 # How the pre-request script works
