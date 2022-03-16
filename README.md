@@ -1,5 +1,5 @@
 # Overview
-Postman collection contains Vonage Video API (a.k.a. TokBox OpenTok) REST API as of 16-Feb-2022 with basic parameters and request body sample. Postman pre-request script is also included in the collection, which automatically generates JSON web token every time you send an API request. 
+Postman collection contains Vonage Video API (a.k.a. TokBox OpenTok) REST API as of 16-Feb-2022 with basic parameters and request body sample. The collection includes Postman pre-request script which automatically generates JSON web token based on your Video API credentials. 
 
 # Applies To
 - [Vonage Video API](https://tokbox.com/developer/guides/basics/)
@@ -13,7 +13,7 @@ This requires a Vonage API account. If you don’t have one already, you can [si
 1. Download Postman desktop app or log in to Postman web app. (Ref. [Download Postman](https://www.postman.com/downloads/))
 2. Import the collection to Postman. (Ref. [Importing Postman data](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-postman-data))
 3. Import the environment template. (Ref. [Adding environment variables](https://learning.postman.com/docs/sending-requests/managing-environments/#adding-environment-variables))
-4. Add your own credential on [CURRENT VALUE] section  
+4. Add your own credential on [CURRENT VALUE] section:  
 projectApiKey = Your Video API project API key  
 projectApiSecret = Your Video API project secret  
 accountApiKey = Your Video API account API key  
@@ -34,7 +34,7 @@ The JWT token claims will be like this for most of the methods:
     }
     
 Some REST methods are restricted to registered administrators for the Vonage Video API account. 
-To use these methods, you must set iss to the account-level API key as below, which is only available to account administrators.
+To use these methods, you must set `iss` to the account-level API key as below, which is only available to account administrators.
 
     {
         "iss": "YOUR_ACCOUNT_API_KEY",
@@ -45,7 +45,7 @@ To use these methods, you must set iss to the account-level API key as below, wh
     }
 
 You would normally generate a JWT token manually using the above claims on [JWT.IO](https://jwt.io/).
-The pre-request script automates the process, generating JWT token and it's ready to use in the `X-OPENTOK-AUTH` header every time you send a call on Postman.
+The pre-request script automates the process, generating JWT token and it's substituted in the `X-OPENTOK-AUTH` header.
 The script also detects if the account-level API key is required or not depending on the REST method by checking a header `accountLevel` on each method.
 
     var accountLevel = pm.request.headers.get('accountLevel');
@@ -57,7 +57,7 @@ The script also detects if the account-level API key is required or not dependin
         generateProjectLevelToken();
     }
 
-Here's a function to set claims for account-level methods:
+The next part is to set claims:
 
     function generateAccountLevelToken() {
         // Set JWT token claims
@@ -76,7 +76,7 @@ Here's a function to set claims for account-level methods:
             'jti': pm.environment.get('jti')
         }
 
-The next part is encoding the JWT token with Base64url which is URL-safe.
+Then encode the JWT token with Base64url which is URL-safe.
 
     function base64url(source) {
         // Encode in classical base64
@@ -108,7 +108,7 @@ The next part is encoding the JWT token with Base64url which is URL-safe.
     signature = base64url(signature);
     var signedToken = `${token}.${signature}`;
 
-This is the last part to assign the generated token into Postman environment `jwt` and this is linked `X-OPENTOK-AUTH` header on each method.
+The last part is to assign the generated token into Postman environment `jwt` and this is authenticated using the `X-OPENTOK-AUTH` header on each method.
 
     pm.environment.set('jwt', signedToken);
 
