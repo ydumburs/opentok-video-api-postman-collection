@@ -11,7 +11,7 @@ This requires a Vonage API account. If you don’t have one already, you can [si
 
 # Set up
 1. Download [Postman](https://www.postman.com/downloads/) desktop app if you haven't installed it yet. You can also use [the Web version](https://blog.postman.com/announcing-postman-for-the-web-now-in-open-beta/).
-2. Import the Environment template `Vonage Video API.postman_environment.json"`. (Ref. [Adding environment variables](https://learning.postman.com/docs/sending-requests/managing-environments/#adding-environment-variables))
+2. Import the Environment template `Vonage Video API.postman_environment.json`. (Ref. [Adding environment variables](https://learning.postman.com/docs/sending-requests/managing-environments/#adding-environment-variables))
 3. Add your credentials to the imported Environment. Make sure you add them on `CURRENT VALUE`. The minimum required to generate a JWT is `jti`, `projectApiKey`, `projectApiSecret`. If you use REST methods that are restricted to admin (those are in `Account management` folder), fill the `accountApiKey` and `accountApiSecret` as well.  
 - `projectApiKey` = Your Video API project API key  
 - `projectApiSecret` = Your Video API project secret  
