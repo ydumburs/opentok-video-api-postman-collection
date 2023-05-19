@@ -1,25 +1,29 @@
 # Overview
-Postman collection contains Vonage Video API (a.k.a. TokBox OpenTok) REST API as of 16-Feb-2022 with basic parameters and request body sample. The collection includes Postman pre-request script which automatically generates JSON web token based on your Video API credentials. 
+Postman collection for Vonage Video API (a.k.a. TokBox OpenTok) REST API with basic parameters and request body sample. The collection includes pre-request script which automatically generates JSON web token based on your Video API credentials.  
+<img width="222" alt="Screenshot 2023-05-19 at 10 51 48" src="https://github.com/ydumburs/vonage-video-api-postman-collection/assets/45432538/55b28857-9b24-4bad-9c8a-2216ffe90ed6">
 
 # Applies To
-- [Vonage Video API](https://tokbox.com/developer/guides/basics/)
 - [Vonage Video REST API](https://tokbox.com/developer/rest/)
 - [Vonage Insights API](https://tokbox.com/developer/guides/insights/)
 
 # Prerequisites
-This requires a Vonage API account. If you don’t have one already, you can [sign up today](https://www.vonage.co.uk/communications-apis/video/?adobe_mc=MCMID%3D83313646441230218354214934259658269953%7CMCORGID%3DA8833BC75245AF9E0A490D4D%2540AdobeOrg%7CTS%3D1646137433) and start building with free credit. 
+This requires a Vonage API account. If you don’t have one already, you can [sign up today](https://www.vonage.co.uk/communications-apis/video/) and start building with free credit. 
 
-# Procedure
-1. Download Postman desktop app or log in to Postman web app. (Ref. [Download Postman](https://www.postman.com/downloads/))
-2. Import the collection to Postman. (Ref. [Importing Postman data](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-postman-data))
-3. Import the environment template. (Ref. [Adding environment variables](https://learning.postman.com/docs/sending-requests/managing-environments/#adding-environment-variables))
-4. Add your own credential on [CURRENT VALUE] section:  
-`projectApiKey` = Your Video API project API key  
-`projectApiSecret` = Your Video API project secret  
-`accountApiKey` = Your Video API account API key  
-`accountApiSecret` = Your Video API account secret  
-`jti` = Set jti to a unique identifier for the JWT token. This is optional. (Ref. [JSON web token spec](https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.7))  
-5. Make sure you select the environment on the top-right dropdown. It's ready to run, expand the imported collection on the left pane and try running any REST API request.
+# Set up
+1. Download [Postman](https://www.postman.com/downloads/) desktop app if you haven't installed it yet. You can also use [the Web version](https://blog.postman.com/announcing-postman-for-the-web-now-in-open-beta/).
+2. Import the Environment template `Vonage Video API.postman_environment.json"`. (Ref. [Adding environment variables](https://learning.postman.com/docs/sending-requests/managing-environments/#adding-environment-variables))
+3. Add your credentials to the imported Environment. Make sure you add them on `CURRENT VALUE`. The minimum required to generate a JWT is `jti`, `projectApiKey`, `projectApiSecret`. If you use REST methods that are restricted to admin (those are in `Account management` folder), fill the `accountApiKey` and `accountApiSecret` as well.  
+- `projectApiKey` = Your Video API project API key  
+- `projectApiSecret` = Your Video API project secret  
+- `accountApiKey` = Your Video API account API key  
+- `accountApiSecret` = Your Video API account secret  
+- `jti` = Set jti to a unique identifier for the JWT token. This is optional. (Ref. [JSON web token spec](https://datatracker.ietf.org/doc/html/rfc7519#section-4.1.7)) 
+4. Import the collection `Vonage Video API.postman_collection_x.json` into Postman. (Ref. [Importing Postman data](https://learning.postman.com/docs/getting-started/importing-and-exporting-data/#importing-postman-data))
+
+# How to make REST requests
+1. Make sure the correct Environment is selected.
+2. Select a request from the imported Collection and click on the "Send" icon.
+3. Find a response.
 
 # How the pre-request script works
 Video API REST methods must be authenticated using a custom HTTP header `X-OPENTOK-AUTH` along with a JWT token.
