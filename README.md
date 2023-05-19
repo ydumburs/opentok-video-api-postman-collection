@@ -22,7 +22,7 @@ This requires a Vonage API account. If you don’t have one already, you can [si
 
 # How to make REST requests
 1. Make sure the correct Environment is selected.
-2. Select a request from the imported Collection and click on the "Send" icon.
+2. Select a request from the imported Collection and click on the `Send` icon.
 3. Find a response.
 
 # How the pre-request script works
