@@ -1,5 +1,5 @@
 # Overview
-Postman collection for Vonage Video API (a.k.a. TokBox OpenTok) REST API with basic parameters and request body sample. The collection includes pre-request script which automatically generates JSON web token based on your Video API credentials.  
+Postman collection for OpenTok REST API with basic parameters and request body sample. The collection includes pre-request script which automatically generates JSON web token based on your Video API credentials.  
 <img width="222" alt="Screenshot 2023-05-19 at 10 51 48" src="https://github.com/ydumburs/vonage-video-api-postman-collection/assets/45432538/55b28857-9b24-4bad-9c8a-2216ffe90ed6">
 
 # Applies To
