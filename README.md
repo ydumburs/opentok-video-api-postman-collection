@@ -1,6 +1,6 @@
 Overview
 ======================
-This Postman collection is designed for the OpenTok Video API, allowing you to manage OpenTok. It provides a set of pre-configured authentications and requests to interact with Video API endpoints efficiently.  
+This Postman collection is designed for managing the OpenTok Video API. It includes pre-configured authentications and requests to interact with Video API endpoints efficiently.
 
 REST API references: 
 - https://tokbox.com/developer/rest/
@@ -12,12 +12,12 @@ How It Works
 Refer to https://github.com/ydumburs/vonage-application-api-postman-collection/blob/main/README.md#using-postman-variables
 
 ## **Authentication**  
-To make an OpenTok REST API request, you need to Authenticate using a HTTP header `X-OPENTOK-AUTH` along with a JWT generated from your API key and secret. 
+To make requests to the OpenTok REST API, you need to authenticate using the `X-OPENTOK-AUTH` HTTP header along with a JWT generated from your API key and secret. 
 
 JWT Generation Options:  
-1. Use: https://jwt.io/ with payload exlained here https://tokbox.com/developer/rest/#authentication
-2. Use a Python script exlained here https://tokbox.com/developer/rest/#authentication
-3. You can also create a JWT using the `jsonwebtoken`. For convenience, configure the endpoint using the SDK and use the `Generate a JWT` request at the top of the Collection. This request includes a Postman post-request script that automatically stores the returned JWT in a Collection variable upon completion.
+1. Use https://jwt.io/ to generate your JWT. The payload details are explained https://tokbox.com/developer/rest/#authentication
+2. Use the Python script detailed here https://tokbox.com/developer/rest/#authentication
+3. You can also create a JWT using the `jsonwebtoken` library. For convenience, configure the endpoint using https://github.com/ydumburs/opentok-generate-jwt. Use the `Generate a JWT` request at the bottomn of the Collection. This request includes a Postman post-request script that automatically stores the returned JWT in a collection variable.  
 ```
 // Postman Post-request script
 const response = pm.response.json(); 
