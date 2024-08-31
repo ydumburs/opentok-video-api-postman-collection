@@ -8,8 +8,8 @@ REST API references:
 
 How It Works
 ======================
-## **Using Postman Variables** 
-Refer to https://github.com/ydumburs/vonage-application-api-postman-collection/blob/main/README.md#using-postman-variables
+## **Using Postman Variables**  
+In this collection, items enclosed in `{{ }}` are variables (e.g., `{{sessionId}}`). You can either replace these placeholders with your own values or set them as variables in Postman. For more information about Postman Collection variable, visit: https://learning.postman.com/docs/sending-requests/variables/variables/#defining-collection-variables. 
 
 ## **Authentication**  
 To make requests to the OpenTok REST API, you need to authenticate using the `X-OPENTOK-AUTH` HTTP header along with a JWT generated from your API key and secret. 
