@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Session, signaling, and moderation",
+			"name": "Session",
 			"item": [
 				{
 					"name": "Create a session",
@@ -198,7 +198,7 @@
 					"response": []
 				},
 				{
-					"name": "Mute streams",
+					"name": "Mute all streams",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -914,7 +914,7 @@
 			]
 		},
 		{
-			"name": "Live streaming broadcasts",
+			"name": "Broadcasts",
 			"item": [
 				{
 					"name": "Start a broadcast",
