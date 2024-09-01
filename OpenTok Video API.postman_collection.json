@@ -7,6 +7,527 @@
 	},
 	"item": [
 		{
+			"name": "Generate a JWT",
+			"item": [
+				{
+					"name": "Server-side",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json(); ",
+									"if (response.token) {",
+									"    pm.collectionVariables.set(\"jwt\", response.token); ",
+									"    console.log(\"JWT has been set to collection variable:\", response.token);",
+									"} else {",
+									"    console.error(\"JWT token not found in the response\");",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/generate-jwt",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"generate-jwt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Postman script",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**",
+									" * OpenTok Video API - Postman Pre-request Script",
+									" * Author: Yukari Dumburs (Created: 19 Jan 2022, Updated: 1 Sep 2024)",
+									" */",
+									"var apiSecret = pm.collectionVariables.get('projectApiSecret');",
+									"var apiKey = pm.collectionVariables.get('projectApiKey');",
+									"var jti = pm.collectionVariables.get('jti');",
+									"if (!apiSecret || !apiKey || !jti) {",
+									"    throw new Error(\"API Secret or API Key or jti is missing!\");",
+									"}",
+									"var currentTimestamp = Math.floor(Date.now() / 1000);",
+									"var expiryTimestamp = currentTimestamp + 300; // 5 minutes",
+									"var header = {",
+									"    'typ': 'JWT',",
+									"    'alg': 'HS256'",
+									"};",
+									"var payload = {",
+									"    'iss': apiKey,",
+									"    'ist': 'project',",
+									"    'iat': currentTimestamp,",
+									"    'exp': expiryTimestamp,",
+									"    'jti': jti",
+									"};",
+									"",
+									"function base64url(source) {",
+									"    let encodedSource = CryptoJS.enc.Base64.stringify(source);",
+									"    encodedSource = encodedSource.replace(/=+$/, '');",
+									"    encodedSource = encodedSource.replace(/\\+/g, '-');",
+									"    encodedSource = encodedSource.replace(/\\//g, '_');",
+									"    return encodedSource;",
+									"}",
+									"",
+									"// Encode header",
+									"var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));",
+									"var encodedHeader = base64url(stringifiedHeader);",
+									"",
+									"// Encode payload",
+									"var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(payload));",
+									"var encodedData = base64url(stringifiedData);",
+									"",
+									"// Build token",
+									"var token = `${encodedHeader}.${encodedData}`;",
+									"",
+									"// Sign token",
+									"var signature = CryptoJS.HmacSHA256(token, apiSecret);",
+									"signature = base64url(signature);",
+									"var signedToken = `${token}.${signature}`;",
+									"",
+									"pm.collectionVariables.set('jwt', signedToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://example.com/dummy",
+							"protocol": "https",
+							"host": [
+								"example",
+								"com"
+							],
+							"path": [
+								"dummy"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				},
+				{
+					"name": "Postman script (account-level)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"/**",
+									" * OpenTok Video API - Postman Pre-request Script",
+									" * Author: Yukari Dumburs (Created: 19 Jan 2022, Updated: 1 Sep 2024)",
+									" */",
+									"var apiSecret = pm.collectionVariables.get('accountApiSecret');",
+									"var apiKey = pm.collectionVariables.get('accountApiKey');",
+									"var jti = pm.collectionVariables.get('jti');",
+									"if (!apiSecret || !apiKey || !jti) {",
+									"    throw new Error(\"API Secret or API Key or jti is missing!\");",
+									"}",
+									"var currentTimestamp = Math.floor(Date.now() / 1000);",
+									"var expiryTimestamp = currentTimestamp + 300; // 5 minutes",
+									"var header = {",
+									"    'typ': 'JWT',",
+									"    'alg': 'HS256'",
+									"};",
+									"var payload = {",
+									"    'iss': apiKey,",
+									"    'ist': 'account',",
+									"    'iat': currentTimestamp,",
+									"    'exp': expiryTimestamp,",
+									"    'jti': jti",
+									"};",
+									"",
+									"function base64url(source) {",
+									"    let encodedSource = CryptoJS.enc.Base64.stringify(source);",
+									"    encodedSource = encodedSource.replace(/=+$/, '');",
+									"    encodedSource = encodedSource.replace(/\\+/g, '-');",
+									"    encodedSource = encodedSource.replace(/\\//g, '_');",
+									"    return encodedSource;",
+									"}",
+									"",
+									"// Encode header",
+									"var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));",
+									"var encodedHeader = base64url(stringifiedHeader);",
+									"",
+									"// Encode payload",
+									"var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(payload));",
+									"var encodedData = base64url(stringifiedData);",
+									"",
+									"// Build token",
+									"var token = `${encodedHeader}.${encodedData}`;",
+									"",
+									"// Sign token",
+									"var signature = CryptoJS.HmacSHA256(token, apiSecret);",
+									"signature = base64url(signature);",
+									"var signedToken = `${token}.${signature}`;",
+									"",
+									"pm.collectionVariables.set('jwt', signedToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://example.com/dummy",
+							"protocol": "https",
+							"host": [
+								"example",
+								"com"
+							],
+							"path": [
+								"dummy"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Project (requires an account-level authentication)",
+			"item": [
+				{
+					"name": "Create a project",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-OPENTOK-AUTH",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"ent_5\",\n    \"environmentId\": \"261\"\n}"
+						},
+						"url": {
+							"raw": "https://api.opentok.com/v2/project",
+							"protocol": "https",
+							"host": [
+								"api",
+								"opentok",
+								"com"
+							],
+							"path": [
+								"v2",
+								"project"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				},
+				{
+					"name": "Change a project",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-OPENTOK-AUTH",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"environmentId\": \"261\"\n}"
+						},
+						"url": {
+							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"opentok",
+								"com"
+							],
+							"path": [
+								"v2",
+								"project",
+								"{{projectApiKey}}"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				},
+				{
+					"name": "Activate a project",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-OPENTOK-AUTH",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"ACTIVE\"\n}"
+						},
+						"url": {
+							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"opentok",
+								"com"
+							],
+							"path": [
+								"v2",
+								"project",
+								"{{projectApiKey}}"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				},
+				{
+					"name": "Suspend a project",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-OPENTOK-AUTH",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"SUSPENDED\"\n}"
+						},
+						"url": {
+							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"opentok",
+								"com"
+							],
+							"path": [
+								"v2",
+								"project",
+								"{{projectApiKey}}"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a project",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-OPENTOK-AUTH",
+								"value": "{{jwt}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"opentok",
+								"com"
+							],
+							"path": [
+								"v2",
+								"project",
+								"{{projectApiKey}}"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				},
+				{
+					"name": "Get a project",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OPENTOK-AUTH",
+								"value": "{{jwt}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"opentok",
+								"com"
+							],
+							"path": [
+								"v2",
+								"project",
+								"{{projectApiKey}}"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				},
+				{
+					"name": "Get projects",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-OPENTOK-AUTH",
+								"value": "{{jwt}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.opentok.com/v2/project/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"opentok",
+								"com"
+							],
+							"path": [
+								"v2",
+								"project",
+								""
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				},
+				{
+					"name": "Generate a new project secret",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-OPENTOK-AUTH",
+								"value": "{{jwt}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}/refreshSecret",
+							"protocol": "https",
+							"host": [
+								"api",
+								"opentok",
+								"com"
+							],
+							"path": [
+								"v2",
+								"project",
+								"{{projectApiKey}}",
+								"refreshSecret"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Session",
 			"item": [
 				{
@@ -401,7 +922,7 @@
 			]
 		},
 		{
-			"name": "Archiving",
+			"name": "Archive",
 			"item": [
 				{
 					"name": "Start an archive",
@@ -830,91 +1351,7 @@
 			]
 		},
 		{
-			"name": "SIP interconnect",
-			"item": [
-				{
-					"name": "Initiate a SIP call",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-OPENTOK-AUTH",
-								"value": "{{jwt}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"sessionId\": \"{{sessionId}}\",\r\n  \"token\": \"{{token}}\",\r\n  \"sip\": {\r\n    \"from\": \"000@nexmo.com\",\r\n    \"uri\": \"sip:000@sip.nexmo.com\",\r\n    \"headers\": {\r\n      \"headerKey\": \"headerValue\"\r\n    },\r\n    \"auth\": {\r\n      \"username\": \"{{vonageApiKey}}\",\r\n      \"password\": \"{{vonageApiSecret}}\"\r\n    },\r\n    \"secure\": false,\r\n    \"video\": false,\r\n    \"observeForceMute\": false\r\n  }\r\n}"
-						},
-						"url": {
-							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}/dial",
-							"protocol": "https",
-							"host": [
-								"api",
-								"opentok",
-								"com"
-							],
-							"path": [
-								"v2",
-								"project",
-								"{{projectApiKey}}",
-								"dial"
-							]
-						},
-						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
-					},
-					"response": []
-				},
-				{
-					"name": "Send DTMF digits to SIP clients",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-OPENTOK-AUTH",
-								"value": "{{jwt}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"digits\": \"1713\"\r\n}"
-						},
-						"url": {
-							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}/session{{sessionId}}/play-dtmf",
-							"protocol": "https",
-							"host": [
-								"api",
-								"opentok",
-								"com"
-							],
-							"path": [
-								"v2",
-								"project",
-								"{{projectApiKey}}",
-								"session{{sessionId}}",
-								"play-dtmf"
-							]
-						},
-						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Broadcasts",
+			"name": "Broadcast",
 			"item": [
 				{
 					"name": "Start a broadcast",
@@ -1276,21 +1713,10 @@
 			]
 		},
 		{
-			"name": "Captions API",
+			"name": "SIP interconnect",
 			"item": [
 				{
-					"name": "Start captions",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
+					"name": "Initiate a SIP call",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1307,10 +1733,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"sessionId\": \"{{sessionId}}\",\n  \"token\": \"{{token}}\",\n  \"languageCode\": \"en-US\",\n  \"maxDuration\": 1800,\n  \"partialCaptions\": true,\n  \"statusCallbackUrl\": \"{{callbackUrl}}\"\n}"
+							"raw": "{\r\n  \"sessionId\": \"{{sessionId}}\",\r\n  \"token\": \"{{token}}\",\r\n  \"sip\": {\r\n    \"from\": \"000@nexmo.com\",\r\n    \"uri\": \"sip:000@sip.nexmo.com\",\r\n    \"headers\": {\r\n      \"headerKey\": \"headerValue\"\r\n    },\r\n    \"auth\": {\r\n      \"username\": \"{{vonageApiKey}}\",\r\n      \"password\": \"{{vonageApiSecret}}\"\r\n    },\r\n    \"secure\": false,\r\n    \"video\": false,\r\n    \"observeForceMute\": false\r\n  }\r\n}"
 						},
 						"url": {
-							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}/captions",
+							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}/dial",
 							"protocol": "https",
 							"host": [
 								"api",
@@ -1321,7 +1747,7 @@
 								"v2",
 								"project",
 								"{{projectApiKey}}",
-								"captions"
+								"dial"
 							]
 						},
 						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
@@ -1329,18 +1755,7 @@
 					"response": []
 				},
 				{
-					"name": "Stop captions",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
+					"name": "Send DTMF digits to SIP clients",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1357,10 +1772,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": ""
+							"raw": "{\r\n  \"digits\": \"1713\"\r\n}"
 						},
 						"url": {
-							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}/captions/{{captionsId}}/stop",
+							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}/session{{sessionId}}/play-dtmf",
 							"protocol": "https",
 							"host": [
 								"api",
@@ -1371,9 +1786,8 @@
 								"v2",
 								"project",
 								"{{projectApiKey}}",
-								"captions",
-								"{{captionsId}}",
-								"stop"
+								"session{{sessionId}}",
+								"play-dtmf"
 							]
 						},
 						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
@@ -1604,7 +2018,114 @@
 			]
 		},
 		{
-			"name": "Insights API",
+			"name": "Captions",
+			"item": [
+				{
+					"name": "Start captions",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-OPENTOK-AUTH",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sessionId\": \"{{sessionId}}\",\n  \"token\": \"{{token}}\",\n  \"languageCode\": \"en-US\",\n  \"maxDuration\": 1800,\n  \"partialCaptions\": true,\n  \"statusCallbackUrl\": \"{{callbackUrl}}\"\n}"
+						},
+						"url": {
+							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}/captions",
+							"protocol": "https",
+							"host": [
+								"api",
+								"opentok",
+								"com"
+							],
+							"path": [
+								"v2",
+								"project",
+								"{{projectApiKey}}",
+								"captions"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				},
+				{
+					"name": "Stop captions",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-OPENTOK-AUTH",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}/captions/{{captionsId}}/stop",
+							"protocol": "https",
+							"host": [
+								"api",
+								"opentok",
+								"com"
+							],
+							"path": [
+								"v2",
+								"project",
+								"{{projectApiKey}}",
+								"captions",
+								"{{captionsId}}",
+								"stop"
+							]
+						},
+						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Insights",
 			"item": [
 				{
 					"name": "Project data",
@@ -1924,302 +2445,7 @@
 			]
 		},
 		{
-			"name": "Account management",
-			"item": [
-				{
-					"name": "Create a project",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-OPENTOK-AUTH",
-								"value": "{{jwt}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"ent_5\",\n    \"environmentId\": \"261\"\n}"
-						},
-						"url": {
-							"raw": "https://api.opentok.com/v2/project",
-							"protocol": "https",
-							"host": [
-								"api",
-								"opentok",
-								"com"
-							],
-							"path": [
-								"v2",
-								"project"
-							]
-						},
-						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
-					},
-					"response": []
-				},
-				{
-					"name": "Change a project",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "X-OPENTOK-AUTH",
-								"value": "{{jwt}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"environmentId\": \"261\"\n}"
-						},
-						"url": {
-							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}",
-							"protocol": "https",
-							"host": [
-								"api",
-								"opentok",
-								"com"
-							],
-							"path": [
-								"v2",
-								"project",
-								"{{projectApiKey}}"
-							]
-						},
-						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
-					},
-					"response": []
-				},
-				{
-					"name": "Activate a project",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "X-OPENTOK-AUTH",
-								"value": "{{jwt}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"status\": \"ACTIVE\"\n}"
-						},
-						"url": {
-							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}",
-							"protocol": "https",
-							"host": [
-								"api",
-								"opentok",
-								"com"
-							],
-							"path": [
-								"v2",
-								"project",
-								"{{projectApiKey}}"
-							]
-						},
-						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
-					},
-					"response": []
-				},
-				{
-					"name": "Suspend a project",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "X-OPENTOK-AUTH",
-								"value": "{{jwt}}",
-								"type": "text"
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"status\": \"SUSPENDED\"\n}"
-						},
-						"url": {
-							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}",
-							"protocol": "https",
-							"host": [
-								"api",
-								"opentok",
-								"com"
-							],
-							"path": [
-								"v2",
-								"project",
-								"{{projectApiKey}}"
-							]
-						},
-						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
-					},
-					"response": []
-				},
-				{
-					"name": "Delete a project",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "X-OPENTOK-AUTH",
-								"value": "{{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}",
-							"protocol": "https",
-							"host": [
-								"api",
-								"opentok",
-								"com"
-							],
-							"path": [
-								"v2",
-								"project",
-								"{{projectApiKey}}"
-							]
-						},
-						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
-					},
-					"response": []
-				},
-				{
-					"name": "Get a project",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-OPENTOK-AUTH",
-								"value": "{{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}",
-							"protocol": "https",
-							"host": [
-								"api",
-								"opentok",
-								"com"
-							],
-							"path": [
-								"v2",
-								"project",
-								"{{projectApiKey}}"
-							]
-						},
-						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
-					},
-					"response": []
-				},
-				{
-					"name": "Get projects",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "X-OPENTOK-AUTH",
-								"value": "{{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://api.opentok.com/v2/project/",
-							"protocol": "https",
-							"host": [
-								"api",
-								"opentok",
-								"com"
-							],
-							"path": [
-								"v2",
-								"project",
-								""
-							]
-						},
-						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
-					},
-					"response": []
-				},
-				{
-					"name": "Generate a new project secret",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "X-OPENTOK-AUTH",
-								"value": "{{jwt}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "https://api.opentok.com/v2/project/{{projectApiKey}}/refreshSecret",
-							"protocol": "https",
-							"host": [
-								"api",
-								"opentok",
-								"com"
-							],
-							"path": [
-								"v2",
-								"project",
-								"{{projectApiKey}}",
-								"refreshSecret"
-							]
-						},
-						"description": "Create a new video object in the account. Note: this does not ingest a video file - use the Dynamic Ingest API for ingestion"
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Callback",
+			"name": "Callbacks",
 			"item": [
 				{
 					"name": "Get callback",
@@ -2625,53 +2851,6 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "Generate a JWT",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const response = pm.response.json(); ",
-							"if (response.token) {",
-							"    pm.collectionVariables.set(\"jwt\", response.token); ",
-							"    console.log(\"JWT has been set to collection variable:\", response.token);",
-							"} else {",
-							"    console.error(\"JWT token not found in the response\");",
-							"}"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3000/generate-jwt",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"generate-jwt"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"event": [
@@ -2701,6 +2880,26 @@
 		},
 		{
 			"key": "projectApiKey",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "projectApiSecret",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "accountApiKey",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "accountApiSecret",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "jti",
 			"value": "",
 			"type": "string"
 		},
