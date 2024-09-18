@@ -26,7 +26,7 @@ You can generate a JWT using one of the following methods:
 2. **Python Script**  
    Use a Python script detailed here https://tokbox.com/developer/rest/#authentication
 3. **Server-Side**  
-   Generate a JWT server-side using the `jsonwebtoken` library. For convenience, you can configure the endpoint as shown in this Node.js script https://github.com/ydumburs/opentok-generate-jwt and use the `Server-side` request in the `Generate a JWT` folder at the top of the Collection. This request includes a Postman post-request script that automatically stores the returned JWT in a collection variable.
+   Generate a JWT server-side using the `jsonwebtoken` library. For convenience, you can configure the endpoint as shown in this Node.js script https://github.com/ydumburs/opentok-node-generate-jwt and use the `Server-side` request in the `Generate a JWT` folder at the top of the Collection. This request includes a Postman post-request script that automatically stores the returned JWT in a collection variable.
 ```
 // Postman Post-request script
 const response = pm.response.json(); 
