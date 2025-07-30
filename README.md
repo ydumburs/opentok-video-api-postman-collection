@@ -6,6 +6,19 @@ REST API references:
 - https://tokbox.com/developer/rest/
 - https://tokbox.com/developer/guides/insights/
 
+How to Use
+======================
+1. **Install Postman**  
+   Download the Postman desktop app: https://www.postman.com/downloads/. You can also use the Web version: https://blog.postman.com/announcing-postman-for-the-web-now-in-open-beta/.
+2. **Import the Collection**  
+   Import the `OpenTok Video API.postman_collection.json` into Postman from the `Import` icon. 
+3. **Configure Collection variables**  
+   Click on the `OpenTok Video API` in the left-hand navigation tree, then select `Variables` tab in the center pane. In the `Current value` section, set your projectApiKey, projectApiSecret, and jti. 
+7. **Generate a JWT**  
+   Click on the `Generate a JWT` folder in the left-hand navigation tree, then select `Postman script`. In the center pane, click `Send`. This will run the script and generate a JWT. For more information on JWT generation, please see https://github.com/ydumburs/opentok-video-api-postman-collection/blob/main/README.md#authentication. 
+8. **Send Requests**  
+   Select any request from the left-hand navigation and click the `Send` button. Note that you may need to modify the request body as needed. Once the JWT has expired, you'll receive a `token has expired` error. To resolve this, you'll need to generate a new JWT by running the `Postman script` again.
+
 How It Works
 ======================
 ## **Using Postman Variables**  
@@ -21,11 +34,9 @@ Authentication Types:
 If your JWT expires, you will receive a token has expired error. Simply generate a new JWT to continue making requests.  
   
 You can generate a JWT using one of the following methods:  
-1. **Online JWT Generator**  
-   Use https://jwt.io/ to generate your JWT. The payload details are explained https://tokbox.com/developer/rest/#authentication
-2. **Python Script**  
-   Use a Python script detailed here https://tokbox.com/developer/rest/#authentication
-3. **Server-Side**  
+1. **Python Script**  
+   Use a Python script detailed here https://tokbox.com/developer/rest/#authentication 
+2. **Server-Side**  
    Generate a JWT server-side using the `jsonwebtoken` library. For convenience, you can configure the endpoint as shown in this Node.js script https://github.com/ydumburs/opentok-node-generate-jwt and use the `Server-side` request in the `Generate a JWT` folder at the top of the Collection. This request includes a Postman post-request script that automatically stores the returned JWT in a collection variable.
 ```
 // Postman Post-request script
@@ -37,7 +48,7 @@ if (response.token) {
     console.error("JWT token not found in the response");
 }
 ```
-4. **Postman Pre-request Script**  
+3. **Postman Pre-request Script**  
    Set your API credentials in a Collection variable, then use the `Postman script` in the `Generate a JWT` folder at the top of the Collection. This script generates a JWT from your API credentials and encodes using the `CryptoJS` library. Then it sets a JWT as the Collection variable `jwt`, which is valid for 5 minutes. **Important Note**: For generating JWTs in Postman, the `CryptoJS` remains a practical choice within Postman's scripting environment, even though it is no longer actively maintained. For security-critical applications, you may want to consider generating JWTs using other options that are more secure.
 ```
 // Postman Pre-request script
